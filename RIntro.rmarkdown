@@ -191,12 +191,15 @@ laender == "Holland"
 * \| (logisches ODER)
 * \! (logisches NICHT)
 
-## Funktionen zum Erzeugen von Vektoren
-
+## Essentielle Funktionen zum Erzeugen von Vektoren
+- Die grundlegendste Funktion zum Erstellen von Vektoren ist c()
 ```{r}
 num_vec2 <- c(9,10)
 num_vec3 <- c(num_vec, num_vec2)
 ```
+
+### Repetition
+- Oftmals müssen wir Vektoren erstellen, die ein bestimmtes Muster aufweisen. Wen wir einen Vektor erzeugen wollen in dem sich Werte wiederholen, nutzen wir rep():
 
 ```{r}
 rep(x = 10, each = 3)
@@ -204,13 +207,23 @@ rep(10, 3)
 rep(c("Ping","Pong"), 3)
 rep(x, 2)
 rep(0:1, c(7,3))
+```
 
+### Sequenzen
+- Ein anderes häufig auftretendes Muster ist eine Zahlensequenz. Zahlensequenzen können effizient mit der seq() Funktion generiert werden:
+
+```{r}
 0:5
 seq(from = 0, to = 5, by = 1) 
 seq(0, 5)
 seq(5, 50, by = 5)
 seq(100, 0, -10)
-seq(0, 10, length.out = 35)
+seq(0, 10, length.out = 35) #äquidistanter Zahlenvektor
+```
+
+```{r}
+vec <- c("a", "b", "c", "d")
+seq_along(vec) # das ist identisch zu 1:length(vec)
 ```
 
 ## Indexierung
@@ -258,6 +271,168 @@ Basic operations
 ## Subsetting
 
 ## Functions
+
+Eine Funktion hat:
+- einen Namen 
+- Argument(e)
+- Body
+- Rückgabewert
+
+Diese einfache Funktion addiert 1 zu einem beliebigen Eingabewert
+```{r}
+plus1 <- function(x) {
+  return(x + 1)
+}
+```
+
+
+```{r}
+plus1(x = 1)
+plus1(x = 51239)
+plus1(2) # 
+```
+
+Was passiert wenn wir als Input einen String angeben?
+
+```{r}
+plus1("genf")
+```
+
+
+```{r}
+plus1x <- function(x) {
+  if(!is.numeric(x)){
+    stop("x muss numerisch sein!!!")
+  }
+  return(x + 1)
+}
+```
+
+```{r}
+plus1x("genf")
+```
+
+
+# return values ---
+plus1 <- function(x) {
+  x + 1
+}
+
+plus1_1 <- function(x) {
+  11 + 23
+  x + 1
+  x + 10
+}
+
+plus1_1(1)
+plus1_1(2)
+
+plus1_2 <- function(x) {
+  return(x + 1)
+  5
+}
+
+plus1_2(2)
+
+plus1_3 <- function(x) {
+  return(x + 1)
+  print("This text is never printed :-(")
+  lm() # this error is never raised
+  print("This is not printed either.")
+}
+
+plus1_3(2)
+
+# default argument ---
+add <- function(x, y = 1) x + y
+add(x = 1)
+add(x = 1, y = 8)
+
+- Eine Funktion kann selbstverständlich mehr als ein Argument haben
+```{r}
+add <- function(x, y) sqrt(x + y)
+add(19, 6)
+```
+
+
+# (*) scoping ---
+
+plus2 <- function(x) {
+  print(paste("x equals", x))
+  x + 2
+}
+
+plus2(1)
+
+x # Lookup error
+
+plus3 <- function(x) {
+  x1 + 3
+}
+# no error here, "x1" could be available in when function is used
+
+plus3(20)
+# now an error is raised because the x1 is not available in the global namespace
+
+x1 <- 20
+
+plus3(1)
+# uses x1 = 20 from global namespace and not x = 1 from function
+
+
+# Conditionals -------------------------------------------------------
+addpositive <- function(x) {
+  if (x > 0) {
+    x + 1
+  }
+}
+
+addpositive(1)
+addpositive(-1) # returns NULL that does not print anything
+
+# add another action when
+addpositive <- function(x) {
+  if (x > 0) {
+    return(x + 1)
+  }
+  if (x <= 0) {
+    return(NA)
+  }
+}
+
+# use "else" to capture all cases where if() is FALSE
+addpositive <- function(x) {
+  if (x > 0) {
+    return(x + 1)
+  } else {
+    return(NA) # alternative for type stability: NA_real_
+  }
+}
+
+addpositive(1)
+addpositive(-1)
+
+
+## useful example
+absval <- function(x) {
+  if (is.na(x)) {
+    return(NA)
+  }
+
+  if (x < 0) {
+    out <- -x
+  } else {
+    out <- x
+  }
+
+  return(out)
+}
+
+absval(2)
+absval(-2)
+absval(NA)
+
+
 ```{r}
 myFun <- function(x){
   y <- sum(x)^2
@@ -267,6 +442,31 @@ myFun <- function(x){
 
 
 ## Loops
+
+```{r}
+x <- c("apples", "oranges", "bananas", "strawberries")
+```
+
+```{r}
+for (i in x) {
+    print(x[i])
+}
+```
+
+```{r}
+for (i in 1:4) {
+    print(x[i])
+}
+```
+
+```{r}
+for (i in seq(x)) {
+    print(x[i])
+}
+```
+
+for (i in 1:4) print(x[i])
+
 
 
 Data tidying

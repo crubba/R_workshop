@@ -1,0 +1,381 @@
+---
+title: "Introduction to R"
+subtitle: MA and PhD Course (University of Zurich)
+author: "Marco Steenbergen & Christian Rubba"
+date: "September 11, 2015"
+output: 
+  html_document:
+    toc: true
+    css: bootstrap-3.3.1/css/flatly.min.css
+    #theme: flatly
+    highlight: tango
+    pandoc_args: [
+      "+RTS", "-K112m",
+      "-RTS"
+    ]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+
+[html Version](http://christianrubba.com/courses/RIntro/html/RIntro.html) [PDF Version](http://christianrubba.com/courses/RIntro/pdf/RIntro.pdf)
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+
+# Start
+
+## Wieso R?
+
+- kostenlos
+- für alle gängigen Betriebssysteme erhältlich
+- in Umfang und Qualität besser als viele kommerzielle Statistikprogramme. 
+- Standard in vielen wissenschaftlichen Communities, u.a. in Politikwissenschaft
+- grosse Community (=Hilfe)
+- Vielseitige Programmiersprache
+
+
+## Paketinstallation
+- (base R), weitere Funktionalität . Der zentrale Server von dem diese Pakete heruntergeladen werden heisst CRAN. 
+- install.packages("package-name") will download a package from one of the CRAN mirrors assuming that a binary is available for your operating system. If you have not set a preferred CRAN mirror in your options(), then a menu will pop up asking you to choose a location.
+- Zum Installieren der Pakete, auf die im Skript zurückgegriffen wird, folgenden Befehl ausführen:
+
+```{r, eval = F}
+pkgs <- c("readr", "haven", "dplyr", "ggplot2", "magrittr", "devtools")
+install.packages(pkgs)
+```
+
+- Mittels `update_packages(ask = FALSE)` können die Pakete zu einem späteren Zeitpunkt aktualisiert werden. 
+
+## Download the data
+```{r, eval = F}
+setwd("your working directory")
+data_src <- list(
+  "http://christianrubba/lehre/data/1.csv"
+  
+)
+
+lapply(data_scr, download.file)
+```
+
+
+Tidy Data
+===========
+
+
+- Beobachtungen sind in den Reihen
+- Variablen sind in den Spalten
+- Alle Informationen sind in einem Datensatz enthalten
+
+
+![Alt text](img/data1.png)
+![Alt text](img/data2.png)
+![Alt text](img/data3.png)
+
+
+Read and Write Data
+============
+read.csv(), 
+
+* Delimited files with read_delim(), read_csv(), read_tsv(), and read_csv2().
+* Fixed width files with read_fwf(), and read_table().
+* Web log files with read_log().
+
+
+## CSV files
+```{r}
+read.csv("~/Dropbox/Lehre/RIntro/data/voter_buying.tab", sep = "\t", header = T)
+```
+
+```{r}
+library(haven)
+```
+
+### Stata (.dta)
+
+## Excel
+
+Mathematical Operations
+============
+```{r}
+10-5
+4^2
+(20/6)-4^2
+
+# Arithmetische Operatoren
+#+,-,*,/,^,%/%
+
+x <- log(5) #Zuweisungsoperator ("gets"-operator) <- . x wurde im Workspace angelegt und kann zu einem späteren Zeitpunkt wieder aufgerufen werden. Neuere Versionen erlauben ebenfalls das "="-Zeichen zum Abspeichern von Objekten (wovon allerdings abgeraten wird)
+x
+
+ls() #Alle Objekte innerhalb des Workspaces werden angezeigt
+```
+
+
+Datenstrukturen
+============
+
+
+
+
+To understand computations in R, two slogans are helpful:
+
+> Everything that exists is an object.
+> Everything that happens is a function call.
+>        John Chambers
+
+
+
+## Vektoren
+* Vektoren sind eindimensionale Datenstrukturen deren Inhalt 
+* Erstelle Vektoren mit der Funktion c() (combine)
+
+
+### Numerische Vektoren
+- Numerische Vektoren 
+```{r}
+num_vec <- c(4,8,15,16,23,42)
+num_vec
+mode(num_vec)
+str(num_vec)
+length(num_vec) #Wieviele Elemente sind in dem Vektor?
+```
+
+### Character
+```{r}
+laender <- c("Schweiz", "Frankreich", "Holland", "Belgien")
+laender
+mode(laender)
+```
+
+Gemischte Vektoren sind nicht möglich!
+
+```{r}
+z <- c(1, 2, "Uri", 4)
+z
+str(z)
+```
+
+#Umwandeln von Vektoren
+```{r}
+zzchar <- as.character(num_vec)
+zznum <- as.numeric(zzchar)
+```
+
+### Factor
+
+### NA Werte
+
+### Boolean
+```{r}
+logic_vec <- c(TRUE, FALSE, TRUE, TRUE)
+logic_vec
+mode(logic_vec)
+```
+
+
+```{r}
+num_vec > 15
+laender == "Holland"
+```
+
+
+* \<
+* \>
+* \>=
+* \<=
+* == 
+* is.na()
+* & (logisches UND)
+* \| (logisches ODER)
+* \! (logisches NICHT)
+
+## Funktionen zum Erzeugen von Vektoren
+
+```{r}
+num_vec2 <- c(9,10)
+num_vec3 <- c(num_vec, num_vec2)
+```
+
+```{r}
+rep(x = 10, each = 3)
+rep(10, 3)
+rep(c("Ping","Pong"), 3)
+rep(x, 2)
+rep(0:1, c(7,3))
+
+0:5
+seq(from = 0, to = 5, by = 1) 
+seq(0, 5)
+seq(5, 50, by = 5)
+seq(100, 0, -10)
+seq(0, 10, length.out = 35)
+```
+
+## Indexierung
+```{r}
+laender[2]
+num_vec3[1:6] #xzz[seq(1,6)], xzz[c(1,2,3,4,5,6)]
+num_vec3[c(2, 5, 10)]
+num_vec3[-1] # negativer Index ist Möglich. Ausschluss des ersten Elementes
+this.value <- 2
+num_vec3[this.value]
+num_vec3[seq(0, 10,by = 2)]
+num_vec3[c(TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE)]
+```
+
+
+```{r}
+#---------Übung 1---------#
+
+#1. Erstelle einen Vektor x mit den Elementen [0,4,8,12,16,20].
+x <- seq(0, 20, 4)
+
+#2. Erstelle einen Vektor y mit den Elementen [3,3,3,4,4,4,4,5,5,5,5,5].
+y <- rep(c(3, 4, 5),c(3, 4, 5))
+
+#3. Füge die ersten 5 Elemente aus dem Vektor x mit den Elementen 2 bis 12 aus dem Vektor y zu einem Vektor z zusammen.
+z <- c(x[1:5], y[2:12])
+
+#4. Ersetze jedes zweite Element aus dem Vektor z mit dem quadrierten Wert.
+z[seq(1, length(z), 2)] <- z[seq(1, length(z), 2)]^2
+```
+
+## Data frames
+```{r}
+head(df, 10) 
+tail(df)
+```
+
+## Lists
+
+
+
+Basic operations
+============
+
+## Subsetting
+
+## Functions
+```{r}
+myFun <- function(x){
+  y <- sum(x)^2
+  return(y)
+}
+```
+
+
+## Loops
+
+
+Data tidying
+============
+
+# Transforming Data
+dplyr provides 
+
+```{r}
+library(dplyr)
+```
+
+## filter and slice
+filter() allows you to select a subset of the rows of a data frame. The first argument is the name of the data frame, and the second and subsequent are filtering expressions evaluated in the context of that data frame. takes logical expressions and returns the rows for which all are TRUE
+
+```{r}
+```
+
+## arrange
+
+## select and rename
+
+## distinct
+
+## mutate and transmute
+
+## Grouped operations
+
+## Piping
+```{r}
+x <- seq(1,1000, 2.5)
+sum(log(x))
+```
+
+```{r}
+log(x) %>% sum
+```
+
+## Merging data sets
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+Plotting
+============
+[Official reference](http://docs.ggplot2.org/current/)
+[Quick reference](http://sape.inf.usi.ch/quick-reference/ggplot2/geom)
+
+## Die Grammar of Graphics 
+
+### Tidy data
+
+## geom_point
+
+```{r, echo=FALSE}
+library(ggplot2)
+```
+
+## geom_histogram and geom_bar
+
+## geom_smooth
+
+## Facetting
+
+## Theming
+
+
+Statistische Modelle
+============
+
+## Lineare Modelle
+```{r}
+#m1 <- lm(x ~ y, data = )
+#summary(m1)
+```
+
+## Generalisierte lineare Modelle
+
+## Interpretation substantialler Effekte
+
+Sonstiges
+=============
+
+# Style Guides
+Variablen- und Funktionsnamen, Klammernregeln, Intendierung, Whitespacing
+
+* [Google's](https://google-styleguide.googlecode.com/svn/trunk/Rguide.xml)
+* [Hadley Wickham's](http://adv-r.had.co.nz/Style.html)
+
+Wichtiger als der Stil für den ihr euch entscheidet, ist das er konsequent benutzt wird.
+
+# R Self Hep
+[stackoverflow](http://stackoverflow.com/)
+[R help](https://stat.ethz.ch/mailman/listinfo/r-help)
+
+# Links
+[dplyr vignette](https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html)
+[Stat 545](https://stat545-ubc.github.io/block009_dplyr-intro.html)
+
+
+Citations
+============

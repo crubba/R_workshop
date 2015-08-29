@@ -25,8 +25,10 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 
 # Start
+Dieser Workshop unterrichtet die Grundlagen der statistischen Programmiersprache R. Das Ziel ist es interessierten Studenten in prägnanter und beispielorientierter Art und Weise zu zeigen, wie typische Probleme der wissenschaftlichen Datenanalyse mit R gelöst werden. Wir betrachten zunächst ganz grundsätzliche Operationen und die zur Verfügung stehenden Datenstrukturen in R. Wir zeigen dann, wie externe Daten geladen werden, gesäubert und manipuliert werden können. Die Datenvisualisierung ist ein essentieller Bestandteil jeder Datenanalyse. Wir stellen Pakete und Funktionen vor mit denen publikationsreife Grafiken erstellt werden können. Schlussendlich widmen wir uns der statistischen Modellierung von Daten. Dabei liegt unser Fokus auf der Implementierung verschiedener Regressionsmodelle. Wir erläutern die allgemeine Syntax der Modelle, zeigen Wege zur Überprüfung der Modellannahmen und präsentieren Möglichkeiten die Resultate substantiell zu interpretieren. 
 
 ## Wieso R?
+Zur Durchführung statistischer Analysen am Computer 
 
 - kostenlos
 - für alle gängigen Betriebssysteme erhältlich
@@ -37,8 +39,8 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 
 ## Paketinstallation
-- (base R), weitere Funktionalität . Der zentrale Server von dem diese Pakete heruntergeladen werden heisst CRAN. 
-- install.packages("package-name") will download a package from one of the CRAN mirrors assuming that a binary is available for your operating system. If you have not set a preferred CRAN mirror in your options(), then a menu will pop up asking you to choose a location.
+- Mit der Installation von R werden zugleich sehr grundsätzliche Funktionen zur Durchführung statistischer Analyse installiert (base R). Weitere Funktionalität kann in Form von Paketen geladen werden, die von jedem geschrieben werden können und auf Internetservern zum Download angeboten werden. Der zentrale Server von dem diese Pakete heruntergeladen werden heisst CRAN. 
+- Innerhalb R können neue Pakete mit der Funktion install.packages("package-name") installiert werden. Wird diese Funktion zum ersten Mal verwendet, fragt R von welchem Server das Paket herunterladen werden soll. Benutzt in diesem Fall einen Server in eurer Nähe.
 - Zum Installieren der Pakete, auf die im Skript zurückgegriffen wird, folgenden Befehl ausführen:
 
 ```{r, eval = F}
@@ -46,9 +48,9 @@ pkgs <- c("readr", "haven", "dplyr", "ggplot2", "magrittr", "devtools")
 install.packages(pkgs)
 ```
 
-- Mittels `update_packages(ask = FALSE)` können die Pakete zu einem späteren Zeitpunkt aktualisiert werden. 
+- Regelmässig erscheinen neuere Versionen von Pakete, die Bugs in alten Versionen beheben oder neue Funktionalität bieten. Zu einem späteren Zeitpunkt können mittels `update_packages(ask = FALSE)` aktualisiert werden.
 
-## Download the data
+## Daten
 ```{r, eval = F}
 setwd("your working directory")
 data_src <- list(
@@ -60,9 +62,10 @@ lapply(data_scr, download.file)
 ```
 
 
-Tidy Data
-===========
+# Saubere Daten (tidy data)
+Ein Grossteil der Arbeit . The two most important properties of tidy data are:
 
+Arranging your data in this way makes it easier to work with because you have a consistent way of referring to variables (as column names) and observations (as row indices). When use tidy data and tidy tools, you spend less time worrying about how to feed the output from one function into the input of another, and more time answering your questions about the data.
 
 - Beobachtungen sind in den Reihen
 - Variablen sind in den Spalten
@@ -74,8 +77,7 @@ Tidy Data
 ![Alt text](img/data3.png)
 
 
-Read and Write Data
-============
+# Daten lesen, Daten schreiben
 read.csv(), 
 
 * Delimited files with read_delim(), read_csv(), read_tsv(), and read_csv2().
@@ -96,8 +98,11 @@ library(haven)
 
 ## Excel
 
-Mathematical Operations
-============
+
+# R Grundlagen
+
+## Mathematische Operationen
+
 ```{r}
 10-5
 4^2
@@ -112,44 +117,36 @@ x
 ls() #Alle Objekte innerhalb des Workspaces werden angezeigt
 ```
 
-
-Datenstrukturen
-============
-
-
-
-
-To understand computations in R, two slogans are helpful:
-
-> Everything that exists is an object.
-> Everything that happens is a function call.
->        John Chambers
-
+## Datenstrukturen
+In den Sozialwissenschaften überwiegt, beispielweise Surveys, Wahldaten, . Soziale Netzwerke
 
 
 ## Vektoren
-* Vektoren sind eindimensionale Datenstrukturen deren Inhalt 
-* Erstelle Vektoren mit der Funktion c() (combine)
-
+Vektoren sind eindimensionale Datenstrukturen. Für numerische und symbolsiche Werte. Zur Erstellung eines neuen Vektors kann die Funktion c() benutzt werden.
 
 ### Numerische Vektoren
-- Numerische Vektoren 
 ```{r}
-num_vec <- c(4,8,15,16,23,42)
+num_vec <- c(4, 8, 15, 16, 23, 42)
 num_vec
 mode(num_vec)
 str(num_vec)
 length(num_vec) #Wieviele Elemente sind in dem Vektor?
 ```
 
-### Character
+### Character Vektoren
 ```{r}
 laender <- c("Schweiz", "Frankreich", "Holland", "Belgien")
 laender
 mode(laender)
 ```
 
-Gemischte Vektoren sind nicht möglich!
+Der Input für die c() Funktion können einzelne aber auch ganze Vektoren sein.
+```{r}
+laender2 <- c("Schweden", "Holland")
+c(laender, laender2)
+```
+
+Beachte: Gemischte Vektoren sind nicht möglich!
 
 ```{r}
 z <- c(1, 2, "Uri", 4)
@@ -157,29 +154,41 @@ z
 str(z)
 ```
 
+Werden numerische und symbolische Werte in einem Vektor gemischt, so wandelt R alle Werte in character um.
+
 #Umwandeln von Vektoren
 ```{r}
 zzchar <- as.character(num_vec)
 zznum <- as.numeric(zzchar)
 ```
 
-### Factor
-
 ### NA Werte
+Innerhalb eines Vektors können fehlende Werte (missing values) mit dem Werte NA ausgezeichnet werden:
+
+```{r}
+vec_with_NA <- c(1, 2, NA, 4)
+is.na(vec_with_NA) # mittels is.na() können missing values identifiziert werden
+```
 
 ### Boolean
+Wie im letzten Beispiel gesehen, benutzt er einen besonderen Vektorentyp um logisch
 ```{r}
 logic_vec <- c(TRUE, FALSE, TRUE, TRUE)
 logic_vec
 mode(logic_vec)
+
+as.numeric(logic_vec) # logische Vektoren können in numerische Vektoren umgewandelt werden
+which(logic_vec) # which() gibt den Index der TRUE Elemente in einem Vektor
 ```
 
 
+Logische Vektoren sind oftmals das Resultate logischer Abfragen:
 ```{r}
 num_vec > 15
 laender == "Holland"
 ```
 
+R enthält eine ganze Reihe Operatoren für logische Abfragen
 
 * \<
 * \>
@@ -191,15 +200,8 @@ laender == "Holland"
 * \| (logisches ODER)
 * \! (logisches NICHT)
 
-## Essentielle Funktionen zum Erzeugen von Vektoren
-- Die grundlegendste Funktion zum Erstellen von Vektoren ist c()
-```{r}
-num_vec2 <- c(9,10)
-num_vec3 <- c(num_vec, num_vec2)
-```
-
 ### Repetition
-- Oftmals müssen wir Vektoren erstellen, die ein bestimmtes Muster aufweisen. Wen wir einen Vektor erzeugen wollen in dem sich Werte wiederholen, nutzen wir rep():
+Oftmals müssen wir Vektoren erstellen, die ein bestimmtes Muster aufweisen. Wenn wir einen Vektor erzeugen wollen in dem sich Werte wiederholen, nutzen wir rep():
 
 ```{r}
 rep(x = 10, each = 3)
@@ -210,13 +212,13 @@ rep(0:1, c(7,3))
 ```
 
 ### Sequenzen
-- Ein anderes häufig auftretendes Muster ist eine Zahlensequenz. Zahlensequenzen können effizient mit der seq() Funktion generiert werden:
+Ein anderes häufig auftretendes Muster ist eine Zahlensequenz. Zahlensequenzen können effizient mit der seq() Funktion generiert werden:
 
 ```{r}
 0:5
 seq(from = 0, to = 5, by = 1) 
 seq(0, 5)
-seq(5, 50, by = 5)
+seq(5, 50, by = 5) # rückwärtslaufender Index
 seq(100, 0, -10)
 seq(0, 10, length.out = 35) #äquidistanter Zahlenvektor
 ```
@@ -229,48 +231,131 @@ seq_along(vec) # das ist identisch zu 1:length(vec)
 ## Indexierung
 ```{r}
 laender[2]
-num_vec3[1:6] #xzz[seq(1,6)], xzz[c(1,2,3,4,5,6)]
-num_vec3[c(2, 5, 10)]
-num_vec3[-1] # negativer Index ist Möglich. Ausschluss des ersten Elementes
+num_vec[1:6] #xzz[seq(1,6)], xzz[c(1,2,3,4,5,6)]
+num_vec[c(1, 3)]
+num_vec[-1] # negativer Index ist Möglich. Ausschluss des ersten Elementes
+
 this.value <- 2
-num_vec3[this.value]
-num_vec3[seq(0, 10,by = 2)]
-num_vec3[c(TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE)]
+num_vec[this.value]
+num_vec[c(TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE)]
 ```
 
 
 ```{r}
 #---------Übung 1---------#
 
-#1. Erstelle einen Vektor x mit den Elementen [0,4,8,12,16,20].
+#1. Erstelle einen Vektor x mit den Elementen [0,4,8,12,16,20]. Speichere ihn ab in einem Objekt namens x. 
 x <- seq(0, 20, 4)
 
-#2. Erstelle einen Vektor y mit den Elementen [3,3,3,4,4,4,4,5,5,5,5,5].
+#2. Erstelle einen Vektor y mit den Elementen [3,3,3,4,4,4,4,5,5,5,5,5]. Speichere ihn ab in einem Objekt namens y.
 y <- rep(c(3, 4, 5),c(3, 4, 5))
 
 #3. Füge die ersten 5 Elemente aus dem Vektor x mit den Elementen 2 bis 12 aus dem Vektor y zu einem Vektor z zusammen.
 z <- c(x[1:5], y[2:12])
 
 #4. Ersetze jedes zweite Element aus dem Vektor z mit dem quadrierten Wert.
-z[seq(1, length(z), 2)] <- z[seq(1, length(z), 2)]^2
+(index <- seq(1, length(z), 2))
+z[index] <- z[index]^2
 ```
 
 ## Data frames
+Data frames sind zweifellos die üblichste Form in der Daten . Die "rechteckige" Struktur, bedeutet jede Spalte hat genau die gleiche Anzahl an Reihen (und andersrum). Dataframes sind oftmals sehr weit, d.h. verfügen über eine grosse Anzahl an Spalten, oder lang (= verfügen über eine grosse Anzahl an Reihen). Beides bringt ein Problem bei der Darstellung des Dataframes im Terminal mit sich. Um sich einen Überblick über einen Dataframe zu verschaffen, können wir die head() Funktionen verwenden, bei der standardmässig die ersten zwanzig Reihen ausgegeben werden.
+
+Data frames können per Hand mit der Funktion data.frame() erstellt werden:
+
 ```{r}
-head(df, 10) 
-tail(df)
+new_df <- data.frame(var2 = c(1,2), var2 = c("a", "b"))
+new_df
 ```
 
+Wir können einzelne Variablen (in den Spalten) direkt ansprechen, entweder durch 
+
+```{r}
+new_df$var1
+new_df[,1] # Indexierung der ersten Spalte
+```
+
+Um einen ersten Eindruck in einen neuen Datensatz zu gewinnen, lohnt es sich oftmals die ersten paar Zeilen des Data Frames anzuschauen:
+
+```{r}
+head(df) 
+```
+
+Analog dazu funktioniert tail(), welches die letzten 20 Zeilen ausdruckt:
+
+```{r}
+tail(df) 
+```
+
+Die Variablennamen werden gesondert gespeichert. Wir können sie uns mit der colnames() Funktion ausgeben lassen:
+
+```{r}
+colnames(df)
+```
+
+Um spezfische Elemente des Variablennamenvektors zu modifizieren benutzen wir die oben erwähnte Indizierungstechnik. Wollten wir den Variablennamen der ersten Spalten umändern, so
+
+```{r}
+colnames(df)[1] <- "JAHR"
+```
+
+Analog zu den Spaltennamen können auch die Reihen . rownames(df)
+
+
 ## Lists
+Listen sind eine weitere Datenstrutkur auf die im Prozess der Datenanalyse oftmals zurückgegriffen wird. Listen sind die generellste Form Daten zu speichern.  Eine Liste ist im seltensten Fall das Dataformat, das wir benutzen wollen, um Daten für die Analyse zu speichern. Es ist oftmals vielmehr ein intermediäres Datenformat.
+
+```{r}
+ourList <- list(zahlen = c(1,2,3), 
+                president = "Obama", 
+                df = data.frame(x = c(1,2), y = c(2,4)))
+ourList
+```
+
+Listen können genauso wie andere Objekte indiziert werden. Hierzu wird ein doppeltes Klammernpaar verwendet (LISTNAME[[INDEX]]), wobei INDEX die Position des Elementes angibt oder durch Benutzen des Namens des Listenelementes.
+
+```{r}
+ourList[[2]]
+ourList$president
+```
+
+Auch Listenelemente können mit <- überschrieben werden:
+
+```{r}
+ourList[[2]] <- "Bush"
+ourList
+```
+
+### Listeniteration
+lapply übt eine Funktion über jedes einzelne Listenelement aus.
+
+```{r}
+voteList <- list(zurich = sample(c(0,1,NA), 1000, replace = T, prob = c(0.25, 0.65, 0.1)),
+                 zug = sample(c(0, 1, NA), 1000, replace = T, prob = c(0.43, 0.29, 0.28)),
+                 wallis = sample(c(0, 1, NA), 1000, replace = T, prob = c(0.5, 0.3, 0.2)))
+```
 
 
 
-Basic operations
-============
+```{r}
+sumYes <- lapply(voteList, sum)
+sumYes
+```
 
-## Subsetting
+```{r}
+lapply(voteList, mean, na.rm = T)
+```
 
-## Functions
+unlist
+```{r}
+unlist(results)
+```
+
+
+
+##  Weitere grundlegende Operationen
+
+### Funktionen
 
 Eine Funktion hat:
 - einen Namen 
@@ -294,7 +379,7 @@ plus1(2) #
 
 Was passiert wenn wir als Input einen String angeben?
 
-```{r}
+```{r, error = TRUE}
 plus1("genf")
 ```
 
@@ -308,11 +393,12 @@ plus1x <- function(x) {
 }
 ```
 
-```{r}
+```{r, error = TRUE}
 plus1x("genf")
 ```
 
 
+```{r, error = TRUE}
 # return values ---
 plus1 <- function(x) {
   x + 1
@@ -347,8 +433,10 @@ plus1_3(2)
 add <- function(x, y = 1) x + y
 add(x = 1)
 add(x = 1, y = 8)
+```
 
 - Eine Funktion kann selbstverständlich mehr als ein Argument haben
+
 ```{r}
 add <- function(x, y) sqrt(x + y)
 add(19, 6)
@@ -357,6 +445,7 @@ add(19, 6)
 
 # (*) scoping ---
 
+```{r, eval = FALSE}
 plus2 <- function(x) {
   print(paste("x equals", x))
   x + 2
@@ -431,6 +520,7 @@ absval <- function(x) {
 absval(2)
 absval(-2)
 absval(NA)
+```
 
 
 ```{r}
@@ -465,12 +555,27 @@ for (i in seq(x)) {
 }
 ```
 
+```{r}
 for (i in 1:4) print(x[i])
+```
+
+Loops sind eine recht allgemeine Form  Vektorisierte Funktionen
 
 
+# Daten "säubern"
+gather, seperate und spread
 
-Data tidying
-============
+```{r}
+library(tidyr)
+```
+
+
+```{r}
+horse <- separate(horse, FastestHorse, into = c("horse name", "time"), sep = "\\(")
+```
+
+Dies kann auch ein regulärer Ausdruck sein.
+
 
 # Transforming Data
 dplyr provides 
@@ -486,8 +591,25 @@ filter() allows you to select a subset of the rows of a data frame. The first ar
 ```
 
 ## arrange
+Zum Arrangieren der Ordnung der Reihen kann arrange verwendet werden. 
+
+```{r}
+df <- arrange(df)
+head(df)
+```
+
+
+```{r}
+df <- arrange(df, desc())
+head(df)
+```
 
 ## select and rename
+
+```{r}
+df <- select(df, lol)
+head(df)
+```
 
 ## distinct
 
@@ -496,43 +618,61 @@ filter() allows you to select a subset of the rows of a data frame. The first ar
 ## Grouped operations
 
 ## Piping
-```{r}
-x <- seq(1,1000, 2.5)
-sum(log(x))
-```
+Das folgende Beispiel veranschaulicht dies:
 
 ```{r}
-log(x) %>% sum
+sum(log(seq(1,1000, 4)))
 ```
+
+Wir möchten hier die Summe der logarithmierten Sequenz von 1 bis 1000 in vierer Schritten berechnen. Zum Interpretieren dieses Befehls, 
+
+Mit Hilfe des **magrittr** Pakets lässt sich der gleiche Befehl in einer , d.h. so wie 
+
+```{r}
+library(magrittr)
+seq(1,1000, 2.5) %>% log %>% sum
+```
+
+Zur Interpretation dieses Befehls können wir nun von links nach rechts lesen. Wir fangen damit an die Zahlensequenz zu generieren. Das Ergebnis dieser Funktion leiten wir an die Logarithmierungsfunktion weiter. Dazu verwenden wir nun die Funktion `%>%` welcDanach wird das Ergebnis weiter an die Summenfunktion geleitet.  
 
 ## Merging data sets
 
-```{r, echo=FALSE}
-plot(cars)
-```
+### inner_join
+inner_join(x, y): return all rows from x where there are matching values in y, and all columns from x and y. If there are multiple matches between x and y, all combination of the matches are returned
 
-You can also embed plots, for example:
+### semi_join(superheroes, publishers)
+semi_join(x, y): return all rows from x where there are matching values in y, keeping just columns from x. A semi join differs from an inner join because an inner join will return one row of x for each matching row of y, where a semi join will never duplicate rows of x.
 
-```{r, echo=FALSE}
-plot(cars)
-```
+### left_join(superheroes, publishers)
+left_join(x, y): return all rows from x, and all columns from x and y. If there are multiple matches between x and y, all combination of the matches are returned
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+### anti_join(superheroes, publishers)
+anti_join(x, y): return all rows from x where there are not matching values in y, keeping just columns from x
 
 
-Plotting
-============
+
+# Plotting
+
+
 [Official reference](http://docs.ggplot2.org/current/)
 [Quick reference](http://sape.inf.usi.ch/quick-reference/ggplot2/geom)
 
 ## Die Grammar of Graphics 
 
-### Tidy data
+Die Syntax ist wie folgt:. Hier für eine Scatterplot zur Darstellung des Zusammenhangs zwischen den Variablen Var1 und Var2: (Abschnitt tidy data)
+
+```{r, eval = F}
+library(ggplot2)
+gg <- ggplot(data = X) + geom_point(aes(x = Var1, y = Var2))
+```
+
+Zum Ausgeben der Grafik muss das Objekt (hier gg) in der Kommandozeile aufgerufen werden
 
 ## geom_point
+geom_point ist die Funktion zum Abbilden eines Wertes in einem Koordinatensystem. 
 
 ```{r, echo=FALSE}
-library(ggplot2)
+
 ```
 
 ## geom_histogram and geom_bar
@@ -548,6 +688,10 @@ Statistische Modelle
 ============
 
 ## Lineare Modelle
+
+* $y_n = \alpha + \beta \times x_n + \epsilon_n$
+$\epsilon_n \sim Normal(0, \sigma)$
+
 ```{r}
 #m1 <- lm(x ~ y, data = )
 #summary(m1)
@@ -566,15 +710,18 @@ Variablen- und Funktionsnamen, Klammernregeln, Intendierung, Whitespacing
 * [Google's](https://google-styleguide.googlecode.com/svn/trunk/Rguide.xml)
 * [Hadley Wickham's](http://adv-r.had.co.nz/Style.html)
 
-Wichtiger als der Stil für den ihr euch entscheidet, ist das er konsequent benutzt wird.
+Wichtiger als der Stil für den ihr euch entscheidet, ist das er konsequent benutzt wird!
 
 # R Self Hep
 [stackoverflow](http://stackoverflow.com/)
 [R help](https://stat.ethz.ch/mailman/listinfo/r-help)
 
-# Links
+# Links & Tutorials
 [dplyr vignette](https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html)
+[magrittr vignette](https://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html)
 [Stat 545](https://stat545-ubc.github.io/block009_dplyr-intro.html)
+[Twotorials](http://www.twotorials.com/)
+[UBC Stat 545](https://stat545-ubc.github.io/)
 
 
 Citations

@@ -2,3 +2,8 @@ base
 haven
 dplyr
 ggplot2
+tidyr
+readxl
+stringr
+foreign
+magrittr
